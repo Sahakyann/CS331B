@@ -1,0 +1,45 @@
+
+Size of struct pack(1): 13 bytes
+Address of a: 0x7fff336e99a5
+Address of b: 0x7fff336e99a6
+Address of c: 0x7fff336e99aa
+*********************************************************
+Size of struct pack(2): 14 bytes
+Address of a: 0x7fff336e99b2
+Address of b: 0x7fff336e99b4
+Address of c: 0x7fff336e99b8
+*********************************************************
+Size of struct pack(4): 20 bytes
+Address of a: 0x7fff336e99c0
+Address of b: 0x7fff336e99c4
+Address of c: 0x7fff336e99c8
+*********************************************************
+Size of struct pack(16): 32 bytes
+Address of a: 0x7fff336e99e0
+Address of b: 0x7fff336e99e4
+Address of c: 0x7fff336e99e8
+
+
+
+pragma pack preprocessing directive allow us to specify the byte alignment that the system should use for the given struct. By default 32 bit systems use 4 byte alignment, and 64 bit systems use 8 byte alignment. That means that the processor will read 4 or 8 bytes respectively in a single cycle from the memory bus. 
+
+Per the documentation I found here
+https://www.ibm.com/docs/hu/zos/2.4.0?topic=descriptions-pragma-pack
+the pragma pack directive tells the system to specifically align the struct data along a specific boundary. Using #pragma pack (1) tells the system to not insert any padding an just align the data one after another.
+
+The output in the first struct case is 13 bytes, which is what we would expect from an int (4) + char(1) + double(8) if there was no padding.
+
+The output of the second struct is 14 bytes due to the 2 byte alignment we have the system do:
+char(1) + padding(1) +
+int(4) = 6 bytes which is already 2 byte aligned so there is no need for padding
+So the total is:
+char(1) + padding(1) +
+int(4) + double(8) = 14 bytes
+
+
+the third struct output is calculated as follow:
+char(1) + padding(3) + int(4) + double(8) + char(1) + padding(3) = 20 bytes. It does not get a padding of 7 at the end like we had in the second assignment example, because we specified for the system to use 4 byte alignment. When it aligns all of the struct elements and the total becomes 17 bytes, it adds 3 more bytes to align it to the closest 4 byte boundary.
+
+the 4th struct that uses a 16 byte alignment is calculated as follows:
+char(1) + padding(3) + int(4) + double(8) + long(8) + char(1) + padding(7) = 32 bytes
+This looks like it adds padding to achieve the closest 16 byte alignment, but in reality it only looks to achieve 8 byte alignment. If we add another long as the last element in the struct, the total struct size will become 40 bytes, which is 8 byte aligned, not 16.

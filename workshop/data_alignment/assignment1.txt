@@ -1,0 +1,24 @@
+Assignment 1 output
+
+int i sizeof(i) = 4, address 0x7ffd0a55341c
+char c sizeof(c) = 1, address 0x7ffd0a553419
+double d sizeof(i) = 8, address 0x7ffd0a553420
+short s sizeof(i) = 2, address 0x7ffd0a55341a
+
+Hex divisibility rules
+
+n divisible by 2 if its last digit is even.
+n is divisible by 3 if its digit sum is divisible by 3.
+n is divisible by 4 if its last digit is 0, 4, 8, or C.
+n is divisible by 5 if its digit sum is divisible by 5.
+n is divisible by 6 if it is divisible by 2 and 3.
+n is divisible by 8 if it ends in 0 or 8.
+n is divisible by A if it is divisible by 2 and 5.
+n is divisible by F if its digit sum is divisible by F.
+n is divisible by 10 (i.e. sixteen) if its last digit is 0.
+
+
+Int value, requires 4 bits and is aligned in a memory address that is divisible by 4
+char value is 1 byte so it can be stored anywhere
+double value, requires 8 bits and is aligned in a memory address that is divisible by 8
+short value, requires 2 bits and is aligned in a memory address that is visible by 2

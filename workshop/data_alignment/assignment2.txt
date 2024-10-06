@@ -1,0 +1,58 @@
+Assignment 2 output
+
+Size of struct: 16 bytes
+struct char a sizeof(c) = 1, address 0x7ffc2e385530
+struct int b sizeof(i) = 4, address 0x7ffc2e385534
+struct double c sizeof(i) = 8, address 0x7ffc2e385538
+Offset of a: 0 bytes
+Offset of b: 4 bytes
+Offset of c: 8 bytes
+***************************************************************
+Size of struct: 24 bytes
+char a sizeof(c) = 1, address 0x7ffc2e385550
+int b sizeof(i) = 4, address 0x7ffc2e385540
+double c sizeof(i) = 8, address 0x7ffc2e385548
+Offset of a: 16 bytes
+Offset of b: 0 bytes
+Offset of c: 8 bytes
+***************************************************************
+Size of struct: 24 bytes
+char a sizeof(c) = 1, address 0x7ffc2e385560
+int b sizeof(i) = 4, address 0x7ffc2e385570
+double c sizeof(i) = 8, address 0x7ffc2e385568
+Offset of a: 0 bytes
+Offset of b: 16 bytes
+Offset of c: 8 bytes
+
+First struct
+struct header{
+        char a;
+        int b;
+        double c;
+
+};
+
+Second struct
+struct header_m{
+        int b;
+        double c;
+        char a;
+};
+
+Third struct
+struct header_c{
+        char a;
+        double c;
+        int b;
+};
+
+
+Required space for the 3 given variables summed up is = Size of (char + double + int) = 1 byte + 8 bytes + 4 bytes = 13
+
+But depending on the order of variables, the size changes due to the padding done by the system, to make sure the data is memory aligned. 32 Bit CPUs read data in cycles, a 4 byte integer will be read in a single cycle, if the address is aligned (that is, divisible by 4). If the variable address is misaligned, it will require more than a single cycle to read the integer. 
+
+The first struct has a sizeof 16 and is calculated the following way = sizeof(char) + 3 (padding) + sizeof(int) + sizeof(double) = 1 byte + 3 bytes + 4 bytes + 8 bytes = 16 bytes. In this alignment the system adds 3 bytes of padding after the char variable so that the next integer variable is aligned (address is divisible by 4). It does not add any padding after the int, because the next variable is of type double and the address at that point is already 8 byte aligned.
+
+The second struct has a sizeof 24 and is calculated the following way = sizeof(int) + 4 (padding) + sizeof(double) + sizeof(char) + 7 (padding) = 4 bytes + 4 bytes + 8 bytes + 1 byte + 7 bytes = 24 bytes. In this alignment the system adds 4 padding after the int to have the double variable aligned, but also adds 7 bytes of padding after reading the last variable in the struct. This is due to the fact that structs themselves need to be naturally aligned. If we create an array consisting of structs of this type, each struct needs to be aligned to make sure the largest variable in the struct is memory aligned. The way it works is after reading the last variable in the struct and allocating its size, it looks at the largest variable size in the struct, in this case - double, and checks if the alignment is natural after we added the last variable size. In our case the last variable is a char and results in 17 bytes of memory which is not 8 byte aligned. The system adds padding to reach the closest, largest variable size byte aligned memory address - so adds 7 bytes to reach the closest 8 byte aligned memory address which is 24.
+
+The third struct has a sizeof 24 and is calculated the following way = sizeof(char) + 7 (padding) + sizeof(double) + sizeof(int) + 4 (padding) = 1 byte + 7 bytes + 8 bytes + 4 bytes + 4 bytes = 24 bytes. The reason for the padding in this struct is the same and the last 4 bytes added are again - the system adding the padding to reach the closest, largest variable size byte aligned memory address - so adds 4 bytes to reach the closest 8 byte aligned memory address which is 24.  
